@@ -3,6 +3,11 @@ services:
   iyuuplus-dev:
     stdin_open: true
     tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      IYUU_REPO_URL: https://github.com/silverfoxonline/iyuuplus-dev.git
     volumes:
       - /root/iyuu:/iyuu
       - /root/data:/data
@@ -10,4 +15,4 @@ services:
       - "8780:8780"
     container_name: IYUUPlus
     restart: always
-    image: iyuucn/iyuuplus-dev:latest
+    image: silverfoxonline/iyuuplus-dev:latest
