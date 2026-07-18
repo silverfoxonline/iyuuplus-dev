@@ -19,6 +19,10 @@ enum DownloaderMarkerEnums: string
      * 标记分类
      */
     case Category = 'category';
+    /**
+     * 标记来源下载器的标签
+     */
+    case SourceTag = 'source_tag';
 
     /**
      * 枚举的文本描述
@@ -31,6 +35,7 @@ enum DownloaderMarkerEnums: string
             self::Empty => '空置操作',
             self::Tag => '标记标签',
             self::Category => '标记分类',
+            self::SourceTag => '标记来源标签',
         };
     }
 

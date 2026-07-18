@@ -72,6 +72,7 @@ class TransferTemplate extends CrontabAbstract
         $markerEmpty = DownloaderMarkerEnums::Empty->value;
         $markerTag = DownloaderMarkerEnums::Tag->value;
         $markerCategory = DownloaderMarkerEnums::Category->value;
+        $markerSourceTag = DownloaderMarkerEnums::SourceTag->value;
         return PHP_EOL . <<<EOF
 <style>
 .layui-form-label {
@@ -112,8 +113,9 @@ class TransferTemplate extends CrontabAbstract
         <input type="radio" name="parameter[marker]" value="$markerEmpty" title="不操作" checked>
         <input type="radio" name="parameter[marker]" value="$markerTag" title="标记标签">
         <input type="radio" name="parameter[marker]" value="$markerCategory" title="标记分类">
+        <input type="radio" name="parameter[marker]" value="$markerSourceTag" title="标记来源标签">
     </div>
-    <div class="layui-form-mid layui-text-em">转移成功后，对种子做标记（需要下载器支持）</div>
+    <div class="layui-form-mid layui-text-em">转移成功后，对种子做标记；标记来源标签会将来源下载器的标签原样带入目标下载器（需要下载器支持）</div>
 </div>
 <div class="layui-form-item">
     <label class="layui-form-label" title="不转移此目录内的种子">路径过滤器</label>

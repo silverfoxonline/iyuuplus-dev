@@ -239,7 +239,12 @@ class TransferServices
                     }
                     break;
                 case ClientEnums::transmission:
-                    if (DownloaderMarkerEnums::Empty !== $this->downloaderMarkerEnums) {
+                    if (DownloaderMarkerEnums::SourceTag === $this->downloaderMarkerEnums) {
+                        $sourceTags = $this->getSourceTags($rocket);
+                        if ($sourceTags) {
+                            $contractsTorrent->parameters['labels'] = $sourceTags;
+                        }
+                    } elseif (DownloaderMarkerEnums::Empty !== $this->downloaderMarkerEnums) {
                         // 添加标签 （tr只有标签）
                         $contractsTorrent->parameters['labels'] = ['IYUU' . ReseedSubtypeEnums::text(ReseedSubtypeEnums::Transfer)];
                     }
@@ -272,6 +277,11 @@ class TransferServices
                         // 标记标签 2024年4月25日
                         if (DownloaderMarkerEnums::Tag === $this->downloaderMarkerEnums) {
                             $toBittorrentClient->torrentAddTags($rocket->infohash, 'IYUU' . ReseedSubtypeEnums::text(ReseedSubtypeEnums::Transfer));
+                        } elseif (DownloaderMarkerEnums::SourceTag === $this->downloaderMarkerEnums) {
+                            $sourceTags = $this->getSourceTags($rocket);
+                            if ($sourceTags) {
+                                $toBittorrentClient->torrentAddTags($rocket->infohash, $sourceTags);
+                            }
                         }
                     }
                     break;
@@ -281,6 +291,26 @@ class TransferServices
         } catch (Throwable $throwable) {
             Log::error('把种子发送给下载器之后，做一些操作，异常啦：' . $throwable->getMessage());
         }
+    }
+
+    /**
+     * 获取来源下载器中种子的标签
+     * @param TransferRocket $rocket
+     * @return array
+     */
+    private function getSourceTags(TransferRocket $rocket): array
+    {
+        $torrent = $rocket->move[$rocket->infohash] ?? [];
+        $tags = $torrent['tags'] ?? $torrent['labels'] ?? [];
+        if (is_string($tags)) {
+            $tags = explode(',', $tags);
+        }
+        if (!is_array($tags)) {
+            return [];
+        }
+
+        $tags = array_map(static fn($tag) => is_string($tag) ? trim($tag) : '', $tags);
+        return array_values(array_unique(array_filter($tags, static fn(string $tag) => '' !== $tag)));
     }
 
     /**
